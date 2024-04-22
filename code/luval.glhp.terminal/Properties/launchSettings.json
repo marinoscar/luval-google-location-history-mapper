@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "luval.glhp.terminal": {
+      "commandName": "Project",
+      "commandLineArgs": "/dir \"C:\\Users\\oscar\\Downloads\\takeout-20240421T171754Z-001\\Takeout\\Location History (Timeline)\\Semantic Location History\" /output \"result.csv\" /account oscar@marin.cr"
+    }
+  }
+}
