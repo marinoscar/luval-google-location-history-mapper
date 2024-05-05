@@ -161,6 +161,52 @@ namespace luval.glhp.Nodes
         }
     }
 
+    public class VisitInfo
+    {
+
+        public string Account { get; set; }
+        public double? LatitudeE7 { get; set; }
+        public double? LongitudeE7 { get; set; }
+        public string Address { get; set; }
+        public double? LocationConfidence { get; set; }
+        public string DeviceTag { get; set; }
+        public DateTime? StartTimestamp { get; set; }
+        public DateTime? EndTimestamp { get; set; }
+        public string PlaceConfidence { get; set; }
+        public string PlaceVisitType { get; set; }
+
+        public string ToCsv()
+        {
+            return $"{Account},{LatitudeE7},{LongitudeE7},\"{Address}\",{LocationConfidence},{DeviceTag},{StartTimestamp},{EndTimestamp},{PlaceConfidence},{PlaceVisitType}";
+        }
+
+        public static string ToCsvHeader()
+        {
+            return $"Account,LatitudeE7,LongitudeE7,Address,LocationConfidence,DeviceTag,StartTimestamp,EndTimestamp,PlaceConfidence,PlaceVisitType";
+        }
+
+        public static VisitInfo FromChildVisit(ChildVisit childVisit)
+        {
+            if (childVisit == null)
+            {
+                throw new ArgumentNullException(nameof(childVisit));
+            }
+
+            return new VisitInfo
+            {
+                LatitudeE7 = childVisit.Location?.LatitudeE7,
+                LongitudeE7 = childVisit.Location?.LongitudeE7,
+                Address = childVisit.Location?.Address,
+                LocationConfidence = childVisit.LocationConfidence,
+                DeviceTag = childVisit.Location?.SourceInfo?.DeviceTag,
+                StartTimestamp = childVisit.Duration?.StartTimestamp,
+                EndTimestamp = childVisit.Duration?.EndTimestamp,
+                PlaceConfidence = childVisit.PlaceConfidence,
+                PlaceVisitType = childVisit.PlaceVisitType
+            };
+        }
+    }
+
     public class CandidateLocation
     {
         [JsonProperty("latitudeE7")]
@@ -355,6 +401,11 @@ namespace luval.glhp.Nodes
                 }
             }
             return result;
+        }
+
+        public List<VisitInfo> GetVisitInfos()
+        {
+            return GetPlaceVisits().SelectMany(i => i.GetVisits()).Select(i => VisitInfo.FromChildVisit(i)).ToList();
         }
     }
 }

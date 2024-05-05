@@ -31,7 +31,7 @@ namespace luval.glhp.terminal
             var dir = arguments["/dir"];
             var result = arguments["/output"];
             var account = arguments["/account"];
-            Transform.ToPlaceVisitCsvFile(account,dir, result, new ColorConsoleLogger());
+            Transform.LoadAllVisitInfosToCsv(account,dir, result, new ColorConsoleLogger());
         }
 
         /// <summary>
