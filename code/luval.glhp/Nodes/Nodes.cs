@@ -119,6 +119,32 @@ namespace luval.glhp.Nodes
         public List<SimplifiedRawPathPoint> Points { get; set; }
     }
 
+    public class GeoLocation()
+    {
+        public double? Longitude { get; set; }
+        public double? Latitude { get; set; }
+
+        public static GeoLocation FromVisitInfo(VisitInfo visitInfo)
+        {
+            return FromVisitInfo(visitInfo.LatitudeE7, visitInfo.LongitudeE7);
+        }
+
+        public static GeoLocation FromVisitInfo(double? LatitudeE7, double? LongitudeE7)
+        {
+            var res = new GeoLocation();
+
+            if (LatitudeE7 > 900000000)
+                LatitudeE7 = LatitudeE7 - 4294967296;
+            if (LongitudeE7 > 1800000000)
+                LongitudeE7 = LongitudeE7 - 4294967296;
+
+            res.Latitude = LatitudeE7 / 10000000;
+            res.Longitude = LongitudeE7 / 10000000;
+            return res;
+        }
+
+    }
+
     public class ChildVisit
     {
         [JsonProperty("location")]
@@ -205,6 +231,12 @@ namespace luval.glhp.Nodes
                 PlaceVisitType = childVisit.PlaceVisitType
             };
         }
+
+        public GeoLocation ToGeo()
+        {
+            return GeoLocation.FromVisitInfo(this);
+        }
+
     }
 
     public class CandidateLocation
